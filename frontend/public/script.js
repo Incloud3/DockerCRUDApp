@@ -73,7 +73,7 @@ function fetchAndDisplayData() {
 
 
 // Loading data on page load
-document.onload = showData();
+document.onload = fetchAndDisplayData();
 
 // Function to add data
 function AddData()
