@@ -52,7 +52,7 @@ function fetchAndDisplayData() {
     fetch('http://localhost:8080/fetch_data.php')
     .then(response => response.json())
     .then(data => {
-        const tableBody = document.getElementById('data-table-body');
+        const tableBody = document.getElementById('crudTable');
         tableBody.innerHTML = '';
 
         data.forEach(row => {
@@ -99,26 +99,15 @@ function AddData()
         .then(response => response.json())
         .then(data => {
             if(data.success) {
-                // Just logging for debugging purpouses
-                console.log("Data successfully saved to the backend");
-            } else {
-                console.error("Error saving data to the backend");
-            }
-        })
-        .catch(error => {
-            console.error("There was an error sending data to the backend: ", error);
-        })
-        .then(response => {
-            if(response.ok) {
+                console.log(data.message); // Data successfully saved to the backend
                 fetchAndDisplayData();  // Update the table after adding data
-                return response.json();
             } else {
-                throw new Error('Network response was not ok');
+                throw new Error(data.message || 'There was an error in the application.');
             }
         })
         .catch(error => {
             console.error("There was an error sending data to the backend: ", error);
-        });
+        })
     }
 }
 
