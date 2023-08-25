@@ -52,7 +52,7 @@ function fetchAndDisplayData() {
     fetch('http://localhost:8080/fetch_data.php')
     .then(response => response.json())
     .then(data => {
-        const tableBody = document.getElementById('crudTable');
+        const tableBody = document.getElementById('crudTable').querySelector('tbody');
         tableBody.innerHTML = '';
 
         data.forEach(row => {
@@ -62,6 +62,10 @@ function fetchAndDisplayData() {
                 <td>${row.age}</td>
                 <td>${row.student_id}</td>
                 <td>${row.email}</td>
+                <td>
+                    <button onclick="deleteData(${row.id})" class="btn btn-danger">Delete</button>
+                    <button onclick="updateData(${row.id})" class="btn btn-warning">Edit</button>
+                </td>
             `;
             tableBody.appendChild(tr);
         });
@@ -111,65 +115,89 @@ function AddData()
     }
 }
 
-// Function to delete data
-function deleteData(index)
-{
-    var currentList;
-    if(localStorage.getItem("currentList") == null)
-    {
-        currentList = [];
-    }
-    else
-    {
-        currentList = JSON.parse(localStorage.getItem("currentList"));
-    }
-
-    currentList.splice(index, 1);
-    localStorage.setItem("currentList", JSON.stringify(currentList));
-    showData();
+function deleteData(id) {
+    fetch('http://localhost:8080/delete.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: 'id=${id}'
+    })
+    .then(response => response.text())
+    .then(data => {
+        console.log(data);
+        fetchAndDisplayData();
+    })
+    .catch(error => {
+        console.error("There was an error deleting the row: ", error);
+    });
 }
 
-// Function to edit data
-function updateData(index)
-{
-    document.getElementById("Submit").style.display = "none";
-    document.getElementById("Update").style.display = "block";
-
-    var currentList;
-    if(localStorage.getItem("currentList") == null)
-    {
-        currentList = [];
-    }
-    else
-    {
-        currentList = JSON.parse(localStorage.getItem("currentList"));
-    }
-
-    document.getElementById("name").value = currentList[index].name;
-    document.getElementById("age").value = currentList[index].age;
-    document.getElementById("student").value = currentList[index].student;
-    document.getElementById("email").value = currentList[index].email;
-
-    document.querySelector("#Update").onclick = function()
-    {
-        if(validateForm() == true)
-        {
-            currentList[index].name = document.getElementById("name").value;
-            currentList[index].age = document.getElementById("age").value;
-            currentList[index].student = document.getElementById("student").value;
-            currentList[index].email = document.getElementById("email").value;
-
-            localStorage.setItem("currentList", JSON.stringify(currentList));
-
-            showData();
-
-            document.getElementById("name").value = "";
-            document.getElementById("age").value = "";
-            document.getElementById("student").value = "";
-            document.getElementById("email").value = "";
-
-            document.getElementById("Submit").style.display = "block";
-            document.getElementById("Update").style.display = "none";
-        }
-    }
+function updateData(id) {
+    console.log("Edit row with ID:", id);
+    // TODO: Implement edit logic here
 }
+
+
+//// Function to delete data
+//function deleteData(index)
+//{
+//    var currentList;
+//    if(localStorage.getItem("currentList") == null)
+//    {
+//        currentList = [];
+//    }
+//    else
+//    {
+//        currentList = JSON.parse(localStorage.getItem("currentList"));
+//    }
+//
+//    currentList.splice(index, 1);
+//    localStorage.setItem("currentList", JSON.stringify(currentList));
+//    showData();
+//}
+//
+//// Function to edit data
+//function updateData(index)
+//{
+//    document.getElementById("Submit").style.display = "none";
+//    document.getElementById("Update").style.display = "block";
+//
+//    var currentList;
+//    if(localStorage.getItem("currentList") == null)
+//    {
+//        currentList = [];
+//    }
+//    else
+//    {
+//        currentList = JSON.parse(localStorage.getItem("currentList"));
+//    }
+//
+//    document.getElementById("name").value = currentList[index].name;
+//    document.getElementById("age").value = currentList[index].age;
+//    document.getElementById("student").value = currentList[index].student;
+//    document.getElementById("email").value = currentList[index].email;
+//
+//    document.querySelector("#Update").onclick = function()
+//    {
+//        if(validateForm() == true)
+//        {
+//            currentList[index].name = document.getElementById("name").value;
+//            currentList[index].age = document.getElementById("age").value;
+//            currentList[index].student = document.getElementById("student").value;
+//            currentList[index].email = document.getElementById("email").value;
+//
+//            localStorage.setItem("currentList", JSON.stringify(currentList));
+//
+//            showData();
+//
+//            document.getElementById("name").value = "";
+//            document.getElementById("age").value = "";
+//            document.getElementById("student").value = "";
+//            document.getElementById("email").value = "";
+//
+//            document.getElementById("Submit").style.display = "block";
+//            document.getElementById("Update").style.display = "none";
+//        }
+//    }
+//}
