@@ -121,7 +121,7 @@ function deleteData(id) {
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
         },
-        body: 'id=${id}'
+        body: `id=${id}`
     })
     .then(response => response.text())
     .then(data => {
