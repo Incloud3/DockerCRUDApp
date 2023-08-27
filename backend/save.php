@@ -17,10 +17,10 @@ if ($conn -> connect_error) {
 
 $name = $_POST['name'];
 $age = $_POST['age'];
-$student = $_POST['student'];
+$student_id = $_POST['student_id'];
 $email = $_POST['email'];
 
-$sql = "INSERT INTO students (name, age, student_id, email) VALUES ('$name', '$age', '$student', '$email')";
+$sql = "INSERT INTO students (name, age, student_id, email) VALUES ('$name', '$age', '$student_id', '$email')";
 
 if ($conn -> query($sql) === TRUE) {
     echo json_encode(["success" => true, "message" => "New record created successfully"]);
