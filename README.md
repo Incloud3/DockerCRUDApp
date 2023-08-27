@@ -63,3 +63,6 @@ The application is a basic CRUD web application. The frontend is written in HTML
 The frontend provides a form for users to input their details. These details can be added to the database, retrieved and displayed, updated, or deleted. Each operation corresponds to a specific PHP script in the backend.
 
 Docker is used to containerize the application.
+
+![Test](https://github.com/Incloud3/DockerCRUDApp/assets/103940999/a43af7a4-d7ab-41ba-aaaa-55c2619da7d2)
+
