@@ -13,7 +13,7 @@ services:
   db:
     image: mysql:5.7
     environment:
-      MYSQL_ROOT_PASSWORD: 1krecik1
+      MYSQL_ROOT_PASSWORD: DBPassword
       MYSQL_DATABASE: crud
     volumes:
       - my-data:/var/lib/mysql
