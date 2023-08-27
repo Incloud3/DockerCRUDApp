@@ -15,10 +15,8 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-// Get ID from request
 $id = $_POST['id'];
 
-// SQL to delete a record
 $sql = "DELETE FROM students WHERE id = $id";
 
 if ($conn->query($sql) === TRUE) {

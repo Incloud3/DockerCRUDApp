@@ -11,4 +11,10 @@ body
 #updateBtn
 {
     display: none;
+    margin-right: 10px;
+}
+
+#cancelBtn
+{
+    display: none;
 }

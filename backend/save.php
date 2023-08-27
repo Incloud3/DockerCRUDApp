@@ -4,7 +4,7 @@ header("Access-Control-Allow-Origin: http://localhost");
 header("Access-Control-Allow-Methods: POST, GET, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type");
 
-$server = "db";
+$servername = "db";
 $username = "root";
 $password = "1krecik1";
 $dbname = "crud";
@@ -17,10 +17,10 @@ if ($conn -> connect_error) {
 
 $name = $_POST['name'];
 $age = $_POST['age'];
-$student_id = $_POST['student_id'];
+$studentId = $_POST['studentId'];
 $email = $_POST['email'];
 
-$sql = "INSERT INTO students (name, age, student_id, email) VALUES ('$name', '$age', '$student_id', '$email')";
+$sql = "INSERT INTO students (name, age, studentId, email) VALUES ('$name', '$age', '$studentId', '$email')";
 
 if ($conn -> query($sql) === TRUE) {
     echo json_encode(["success" => true, "message" => "New record created successfully"]);

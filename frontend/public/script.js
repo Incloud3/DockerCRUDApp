@@ -1,12 +1,12 @@
-// Function to validate data in form before submission
-
+//Setting variable for editing
 let currentId = null;
 
+//Validate input
 function validateForm()
 {
     var name = document.getElementById("name").value;
     var age = document.getElementById("age").value;
-    var student = document.getElementById("student_id").value;
+    var student = document.getElementById("studentId").value;
     var email = document.getElementById("email").value;
 
     if(name == "")
@@ -26,7 +26,7 @@ function validateForm()
         return false
     }
 
-    if(student == "")
+    if(studentId == "")
     {
         alert("Student ID is required");
         return false;
@@ -51,6 +51,7 @@ function validateForm()
     return true;
 }
 
+//Fetch data from db
 function fetchAndDisplayData() {
     fetch('http://localhost:8080/fetch_data.php')
     .then(response => response.json())
@@ -64,7 +65,7 @@ function fetchAndDisplayData() {
             tr.innerHTML = `
                 <td>${row.name}</td>
                 <td>${row.age}</td>
-                <td>${row.student_id}</td>
+                <td>${row.studentId}</td>
                 <td>${row.email}</td>
                 <td>
                     <button onclick="deleteData(${row.id})" class="btn btn-danger">Delete</button>
@@ -80,10 +81,10 @@ function fetchAndDisplayData() {
 }
 
 
-// Loading data on page load
+//Onload fetch existing data
 document.onload = fetchAndDisplayData();
 
-// Function to add data
+//Add new rows/data
 function addData(event)
 {
     event.preventDefault();
@@ -91,13 +92,13 @@ function addData(event)
     {
         var name = document.getElementById("name").value;
         var age = document.getElementById("age").value;
-        var student = document.getElementById("student_id").value;
+        var student = document.getElementById("studentId").value;
         var email = document.getElementById("email").value;
 
         var formData = new FormData();
         formData.append("name", name);
         formData.append("age", age);
-        formData.append("student_id", student);
+        formData.append("studentId", student);
         formData.append("email", email);
 
         fetch("http://localhost:8080/save.php", {
@@ -108,8 +109,8 @@ function addData(event)
         .then(response => response.json())
         .then(data => {
             if(data.success) {
-                console.log(data.message); // Data successfully saved to the backend
-                fetchAndDisplayData();  // Update the table after adding data
+                console.log(data.message);
+                fetchAndDisplayData();
                 document.getElementById('crudForm').reset();
             } else {
                 throw new Error(data.message || 'There was an error in the application.');
@@ -121,6 +122,7 @@ function addData(event)
     }
 }
 
+//Delete selected row
 function deleteData(id) {
     fetch('http://localhost:8080/delete.php', {
         method: 'POST',
@@ -139,13 +141,12 @@ function deleteData(id) {
     });
 }
 
+//Edit and update selected row
 function updateData(id, event) 
 {
     event.preventDefault();
-    console.log("Edit row with ID:", id);
     const formData = new FormData(document.getElementById('crudForm'));
 
-    // Append the ID to the formData
     formData.append('id', id);
 
     fetch('http://localhost:8080/update.php', {
@@ -154,20 +155,20 @@ function updateData(id, event)
     })
     .then(response => response.text())
     .then(data => {
-        console.log(data);  // Log the response from the backend
+        console.log(data);
 
-        // Reset form and table view
         document.getElementById('crudForm').reset();
         document.getElementById('addDataBtn').style.display = 'block';
         document.getElementById('updateBtn').style.display = 'none';
+        document.getElementById('cancelBtn').style.display = 'none';
 
-        // Re-enable all delete buttons
-        const deleteButtons = document.querySelectorAll('button[data-delete-id]');
+        const allButtons = document.querySelectorAll('button');
+        const deleteButtons = Array.from(allButtons).filter(btn => btn.innerText === "Delete");
         deleteButtons.forEach(btn => {
             btn.disabled = false;
         });
 
-        fetchAndDisplayData();  // Refresh the table data
+        fetchAndDisplayData();
         revertFromEditMode();
     })
     .catch(error => {
@@ -175,101 +176,45 @@ function updateData(id, event)
     });
 }
 
+//Fills in data of row being edited
 function populateFormForEdit(id) {
-    // Retrieve data from the row with the given id
     const row = document.querySelector(`tr[data-row-id="${id}"]`);
     const columns = row.querySelectorAll('td');
     currentId = id
 
-    // Populate the form with the row's data
     document.getElementById('name').value = columns[0].textContent;
     document.getElementById('age').value = columns[1].textContent;
-    document.getElementById('student_id').value = columns[2].textContent;
+    document.getElementById('studentId').value = columns[2].textContent;
     document.getElementById('email').value = columns[3].textContent;
 
-    // Hide the Add button and show the Update button
     document.getElementById('addDataBtn').style.display = 'none';
     document.getElementById('updateBtn').style.display = 'block';
+    document.getElementById('cancelBtn').style.display = 'block';
 
-    // Disable all delete buttons
-    const deleteButtons = document.querySelectorAll('button[data-delete-id]');
+    const allButtons = document.querySelectorAll('button');
+    const deleteButtons = Array.from(allButtons).filter(btn => btn.innerText === "Delete");
     deleteButtons.forEach(btn => {
         btn.disabled = true;
     });
 }
 
+//Reverts changes to button stance and clears form
 function revertFromEditMode() {
     document.getElementById('crudForm').reset();
     document.getElementById('addDataBtn').style.display = 'block';
     document.getElementById('updateBtn').style.display = 'none';
+    document.getElementById('cancelBtn').style.display = 'none';
 
-    // Re-enable all delete buttons
-    const deleteButtons = document.querySelectorAll('button[data-delete-id]');
+    const allButtons = document.querySelectorAll('button');
+    const deleteButtons = Array.from(allButtons).filter(btn => btn.innerText === "Delete");
     deleteButtons.forEach(btn => {
         btn.disabled = false;
     });
 }
 
-
-//// Function to delete data
-//function deleteData(index)
-//{
-//    var currentList;
-//    if(localStorage.getItem("currentList") == null)
-//    {
-//        currentList = [];
-//    }
-//    else
-//    {
-//        currentList = JSON.parse(localStorage.getItem("currentList"));
-//    }
-//
-//    currentList.splice(index, 1);
-//    localStorage.setItem("currentList", JSON.stringify(currentList));
-//    showData();
-//}
-//
-//// Function to edit data
-//function updateData(index)
-//{
-//    document.getElementById("Submit").style.display = "none";
-//    document.getElementById("Update").style.display = "block";
-//
-//    var currentList;
-//    if(localStorage.getItem("currentList") == null)
-//    {
-//        currentList = [];
-//    }
-//    else
-//    {
-//        currentList = JSON.parse(localStorage.getItem("currentList"));
-//    }
-//
-//    document.getElementById("name").value = currentList[index].name;
-//    document.getElementById("age").value = currentList[index].age;
-//    document.getElementById("student").value = currentList[index].student;
-//    document.getElementById("email").value = currentList[index].email;
-//
-//    document.querySelector("#Update").onclick = function()
-//    {
-//        if(validateForm() == true)
-//        {
-//            currentList[index].name = document.getElementById("name").value;
-//            currentList[index].age = document.getElementById("age").value;
-//            currentList[index].student = document.getElementById("student").value;
-//            currentList[index].email = document.getElementById("email").value;
-//
-//            localStorage.setItem("currentList", JSON.stringify(currentList));
-//
-//            showData();
-//
-//            document.getElementById("name").value = "";
-//            document.getElementById("age").value = "";
-//            document.getElementById("student").value = "";
-//            document.getElementById("email").value = "";
-//
-//            document.getElementById("Submit").style.display = "block";
-//            document.getElementById("Update").style.display = "none";
-//        }
-//    }
-//}
+//Cancels any changes and reenables buttons
+function cancelEdit() {
+    document.getElementById('crudForm').reset();
+    currentId = null;
+    revertFromEditMode();
+}
